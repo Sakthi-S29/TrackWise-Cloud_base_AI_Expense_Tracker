@@ -19,18 +19,9 @@ function AddEntry() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!amount) {
-      setError('Amount is required');
-      return;
-    }
-    if (!year || !month || !day) {
-      setError('Complete date is required');
-      return;
-    }
-    if (!description.trim()) {
-      setError('Description is required');
-      return;
-    }
+    if (!amount) return setError('Amount is required');
+    if (!year || !month || !day) return setError('Complete date is required');
+    if (!description.trim()) return setError('Description is required');
 
     setError('');
     const fullDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -44,7 +35,7 @@ function AddEntry() {
     };
 
     try {
-      const response = await fetch("https://faleg426z1.execute-api.us-east-1.amazonaws.com/manual-entry", {
+      const response = await fetch("https://jlr7jgf0p6.execute-api.us-east-1.amazonaws.com/manual-entry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -72,11 +63,48 @@ function AddEntry() {
   const handleBillUpload = (e) => {
     const file = e.target.files[0];
     setBillFile(file);
-    console.log('Bill file selected:', file);
+
+    // 👇 TEMP MOCK until we build preview logic after Textract parse webhook
     setParsedItems([
       { item: 'Milk 1L', amount: 60, category: 'Food' },
       { item: 'Dettol', amount: 150, category: 'Health' }
     ]);
+  };
+
+  const handleBillUploadSubmit = async () => {
+    if (!billFile) return setError("Please upload a bill.");
+
+    try {
+      const res = await fetch("https://jlr7jgf0p6.execute-api.us-east-1.amazonaws.com/get-presigned-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filename: billFile.name })
+      });
+
+      const { url, fields } = await res.json();
+
+      const uploadData = new FormData();
+      Object.entries(fields).forEach(([k, v]) => uploadData.append(k, v));
+      uploadData.append("Content-Type", billFile.type); // REQUIRED
+      uploadData.append("file", billFile); // Must be LAST
+
+      const uploadRes = await fetch(url, {
+        method: "POST",
+        body: uploadData
+      });
+
+      if (uploadRes.ok) {
+        alert("Bill uploaded successfully! Parsing will happen automatically.");
+        setBillFile(null);
+        setParsedItems([]); // Clear or wait for DynamoDB webhook
+      } else {
+        throw new Error("Upload failed");
+      }
+
+    } catch (err) {
+      console.error("Upload failed:", err);
+      setError("Bill upload failed.");
+    }
   };
 
   const handleParsedChange = (index, field, value) => {
@@ -110,7 +138,17 @@ function AddEntry() {
               onChange={handleBillUpload}
               className="w-full p-3 border rounded-lg"
             />
-            {billFile && <p className="mt-2 text-green-600">Selected file: {billFile.name}</p>}
+            {billFile && (
+              <>
+                <p className="mt-2 text-green-600">Selected file: {billFile.name}</p>
+                <button
+                  onClick={handleBillUploadSubmit}
+                  className="mt-3 bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  Upload Bill
+                </button>
+              </>
+            )}
             {parsedItems.length > 0 && (
               <div className="mt-4">
                 <h4 className="font-semibold mb-2">Parsed Items</h4>
@@ -163,21 +201,15 @@ function AddEntry() {
         <div className="flex gap-4">
           <select className="w-1/3 p-3 border rounded-lg" value={year} onChange={(e) => setYear(e.target.value)}>
             <option value="">Year</option>
-            {years.map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
+            {years.map((y) => <option key={y} value={y}>{y}</option>)}
           </select>
           <select className="w-1/3 p-3 border rounded-lg" value={month} onChange={(e) => setMonth(e.target.value)}>
             <option value="">Month</option>
-            {months.map((m) => (
-              <option key={m} value={m}>{m}</option>
-            ))}
+            {months.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
           <select className="w-1/3 p-3 border rounded-lg" value={day} onChange={(e) => setDay(e.target.value)}>
             <option value="">Day</option>
-            {days.map((d) => (
-              <option key={d} value={d}>{d}</option>
-            ))}
+            {days.map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
         </div>
         <select

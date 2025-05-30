@@ -6,54 +6,68 @@ from datetime import datetime
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table("TrackWiseRecords")
 
+def safe_decimal(value_str):
+    try:
+        return Decimal(value_str.replace("$", "").replace(",", "").strip())
+    except:
+        return Decimal("0")
+
 def lambda_handler(event, context):
     try:
-        # Extract bucket and file name
+        # S3 event info
         bucket = event['Records'][0]['s3']['bucket']['name']
         document = event['Records'][0]['s3']['object']['key']
 
-        # Analyze expense using Textract
+        # Analyze receipt using Textract
         textract = boto3.client('textract')
         response = textract.analyze_expense(
             Document={'S3Object': {'Bucket': bucket, 'Name': document}}
         )
-
         doc = response['ExpenseDocuments'][0]
 
-        # Extract summary fields
+        # Parse summary fields
         summary = {}
         for field in doc.get('SummaryFields', []):
             label = field.get('Type', {}).get('Text')
             value = field.get('ValueDetection', {}).get('Text')
             if label and value:
-                summary[label] = value
+                summary[label.upper()] = value  # Normalize for easier fallback
+
+        # Choose total amount using fallback strategy
+        total_candidates = []
+        for key in ["TOTAL", "SUBTOTAL", "AMOUNT_DUE", "BALANCE", "AMOUNT"]:
+            if key in summary:
+                total_candidates.append(safe_decimal(summary[key]))
+        
+        if not total_candidates:
+            for val in summary.values():
+                try:
+                    total_candidates.append(safe_decimal(val))
+                except:
+                    continue
+
+        amount = max(total_candidates) if total_candidates else Decimal("0")
 
         # Parse line items
         line_items = []
-        for item_group in doc.get('LineItemGroups', []):
-            for item in item_group.get('LineItems', []):
+        for group in doc.get('LineItemGroups', []):
+            for item in group.get('LineItems', []):
                 fields = {
                     f.get('Type', {}).get('Text'): f.get('ValueDetection', {}).get('Text')
-                    for f in item['LineItemExpenseFields']
+                    for f in item.get('LineItemExpenseFields', [])
                 }
-                amount_str = fields.get("PRICE", "0").replace("$", "").replace(",", "")
-                try:
-                    amount = Decimal(amount_str)
-                except:
-                    amount = Decimal("0")
-
                 line_items.append({
                     "item": fields.get("ITEM", ""),
-                    "amount": amount,
+                    "amount": safe_decimal(fields.get("PRICE", "0")),
                     "category": "Uncategorized"
                 })
 
-        # Construct record
+        # Prepare record for DynamoDB
         record = {
             "id": document,
             "type": "expense",
             "date": datetime.now().strftime("%Y-%m-%d"),
-            "amount": Decimal(summary.get("TOTAL", "0").replace("$", "").replace(",", "")),
+            "amount": amount,
             "category": "AutoParsed",
             "description": summary.get("VENDOR_NAME", "Bill"),
             "vendor": summary.get("VENDOR_NAME", ""),
@@ -61,12 +75,12 @@ def lambda_handler(event, context):
             "source": "textract"
         }
 
-        # Store to DynamoDB
+        # Store in DynamoDB
         table.put_item(Item=record)
 
         return {
             "statusCode": 200,
-            "body": json.dumps({"message": "Parsed and stored successfully", "record": record})
+            "body": json.dumps({"message": "Parsed and stored successfully"})
         }
 
     except Exception as e:

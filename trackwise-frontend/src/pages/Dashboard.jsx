@@ -8,7 +8,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const res = await fetch('https://faleg426z1.execute-api.us-east-1.amazonaws.com/get-transactions'); // Replace if needed
+        const res = await fetch('https://jlr7jgf0p6.execute-api.us-east-1.amazonaws.com/get-transactions'); // Replace if needed
         const data = await res.json();
         setRecords(data);
       } catch (err) {
