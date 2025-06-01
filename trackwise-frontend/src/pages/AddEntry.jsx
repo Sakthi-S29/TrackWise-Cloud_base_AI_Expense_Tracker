@@ -35,7 +35,7 @@ function AddEntry() {
     };
 
     try {
-      const response = await fetch("https://jlr7jgf0p6.execute-api.us-east-1.amazonaws.com/manual-entry", {
+      const response = await fetch("https://zkcuaxz8b9.execute-api.us-east-1.amazonaws.com/manual-entry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -75,7 +75,7 @@ function AddEntry() {
     if (!billFile) return setError("Please upload a bill.");
 
     try {
-      const res = await fetch("https://jlr7jgf0p6.execute-api.us-east-1.amazonaws.com/get-presigned-url", {
+      const res = await fetch("https://zkcuaxz8b9.execute-api.us-east-1.amazonaws.com/get-presigned-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ filename: billFile.name })
