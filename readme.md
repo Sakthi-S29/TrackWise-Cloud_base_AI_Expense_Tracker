@@ -1,4 +1,3 @@
-```markdown
 # 📊 TrackWise – AI-Powered Expense Tracker with Bill Scanning and Chatbot
 
 **TrackWise** is a cloud-native, serverless expense tracking application designed to simplify financial management. It enables users to add expenses manually or by uploading bills, and features a chatbot that provides intelligent financial insights using Amazon Bedrock and OpenSearch.
@@ -215,20 +214,3 @@ The chatbot uses embedded queries + Claude LLM to answer based on OpenSearch-mat
 * CloudWatch + SNS alerts for cost control
 
 ---
-
-## 👨‍💻 Author
-
-* **Sakthi Sharan Mahadevan** – Developer, Architect, and AWS Engineer
-
-> Contributions welcome!
-
----
-
-## 📄 License
-
-MIT License – Free to use, modify, and deploy.
-
-```
-
-Let me know if you want a `docs/` folder with starter screenshots, logo badge, or a `.gitignore` and `.env.sample` file!
-```
