@@ -29,5 +29,8 @@
 .idea/
 *.swp
 
-aws_cli
-sample_bill.pdf
+trackwise-embedding/aws_cli
+
+.env
+
+.env.production

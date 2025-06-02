@@ -1,7 +1,16 @@
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+const colors = require('tailwindcss/colors')
+
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx}"
+  ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: colors.blue["600"]
+      }
+    }
   },
-  plugins: [],
-};
+  plugins: []
+}

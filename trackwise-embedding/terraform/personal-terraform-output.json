@@ -1,0 +1,7 @@
+{
+  "embedding_api_url": {
+    "sensitive": false,
+    "type": "string",
+    "value": "https://dpgdjucve8.execute-api.us-east-1.amazonaws.com/prod/index-embedding"
+  }
+}

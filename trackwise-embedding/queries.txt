@@ -1,0 +1,49 @@
+## ✅ **Good Example Queries (Supported)**
+
+### 🔹 Expense Tracking
+
+* “How much did I spend on groceries last month?”
+* “What was my total spending in April?”
+* “List all my transactions from last week.”
+* “How many times did I shop at Walmart?”
+* “Show me my highest single transaction this month.”
+* “How much did I spend on transportation in May?”
+* “What’s my average weekly expense?”
+
+---
+
+### 🔹 Category & Vendor Insights
+
+* “How much did I spend on food deliveries?”
+* “Which store did I visit most frequently?”
+* “Did I make any purchases at Amazon last week?”
+* “How many transactions were from Dollar Tree?”
+
+---
+
+### 🔹 Time-based Queries
+
+* “What were my expenses on May 14?”
+* “Summarize my spending in the past 7 days.”
+* “What’s my monthly spending trend over the past 3 months?”
+
+---
+
+### 🔹 Transaction Type
+
+* “How many income transactions do I have?”
+* “How many transactions are above \$100?”
+* “List all debit transactions from this week.”
+
+---
+
+## ❌ **Blocked or Generic Queries (Respond with "Sorry, try again.")**
+
+These should be blocked by your current prompt logic:
+
+* “How can I save money?”
+* “Do you have any suggestions?”
+* “Can you help with budgeting?”
+* “What should I eat today?”
+* “What’s a good investment for me?”
+* “I’m bored — tell me something”
