@@ -1,7 +1,3 @@
-Here’s a polished `README.md` written from a **third-person user perspective** — as if guiding another developer who is **new to the project**. It's beginner-friendly, detailed, and structured for GitHub:
-
----
-
 ```markdown
 # 📊 TrackWise – AI-Powered Expense Tracker with Bill Scanning and Chatbot
 
