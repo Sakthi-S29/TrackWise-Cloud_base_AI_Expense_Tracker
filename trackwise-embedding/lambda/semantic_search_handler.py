@@ -19,7 +19,7 @@ auth = AWS4Auth(
 )
 
 # Constants
-opensearch_url = "https://search-transaction-vectore-store-3sxh5zsi2y7pzl5a3ytfb2unri.aos.us-east-1.on.aws/transactions/_search"
+OPENSEARCH_URL = os.environ["OPENSEARCH_URL"]
 claude_model_id = "anthropic.claude-instant-v1"
 EXPECTED_TOKEN = os.environ["EXPECTED_TOKEN"]
 
