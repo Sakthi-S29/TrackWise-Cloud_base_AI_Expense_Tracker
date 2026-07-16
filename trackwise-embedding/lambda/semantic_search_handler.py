@@ -20,7 +20,7 @@ auth = AWS4Auth(
 # Constants
 opensearch_url = "https://search-transaction-vectore-store-3sxh5zsi2y7pzl5a3ytfb2unri.aos.us-east-1.on.aws/transactions/_search"
 claude_model_id = "anthropic.claude-instant-v1"
-EXPECTED_TOKEN = "Bearer sakthi-2025-trackwise-token"
+EXPECTED_TOKEN = os.environ["EXPECTED_TOKEN"]
 
 def claude_prompt(query, texts):
     context = "\n\n".join(texts)
