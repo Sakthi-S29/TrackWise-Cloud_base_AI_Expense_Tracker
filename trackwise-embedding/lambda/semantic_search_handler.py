@@ -2,6 +2,7 @@ import json
 import boto3
 import requests
 from requests_aws4auth import AWS4Auth
+import os
 
 region = "us-east-1"
 service = "es"
