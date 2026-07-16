@@ -4,6 +4,10 @@ import requests
 import logging
 from requests_aws4auth import AWS4Auth
 from datetime import datetime
+import os
+
+EXPECTED_TOKEN = os.environ["AUTH_TOKEN"]
+
 
 # --- Setup logging ---
 logger = logging.getLogger()
@@ -32,8 +36,12 @@ def lambda_handler(event, context):
         # Auth check
         headers = {k.lower(): v for k, v in event.get("headers", {}).items()}
         token = headers.get("authorization")
-        if token != "Bearer sakthi-2025-trackwise-token":
-            return { "statusCode": 401, "body": "Unauthorized" }
+        if token != f"Bearer {EXPECTED_TOKEN}":
+            return 
+            {
+                "statusCode": 401,
+                "body": json.dumps({"error": "Unauthorized"})
+            }
 
         body = json.loads(event["body"])
         record_id = body["id"]
