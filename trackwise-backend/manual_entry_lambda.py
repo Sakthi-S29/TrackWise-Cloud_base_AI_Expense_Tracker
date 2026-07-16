@@ -7,8 +7,8 @@ import requests
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('TrackWiseRecords')
 
-EMBEDDING_API = "https://dqficiv943.execute-api.us-east-1.amazonaws.com/prod/index-embedding"
-AUTH_TOKEN = "sakthi-2025-trackwise-token"
+EMBEDDING_API = os.environ["EMBEDDING_API"]
+AUTH_TOKEN = os.environ["AUTH_TOKEN"]
 
 def notify_embedding(record):
     try:
