@@ -3,6 +3,7 @@ from decimal import Decimal
 import boto3
 import uuid
 import requests
+import os
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('TrackWiseRecords')
