@@ -1,8 +1,9 @@
 import json
 import requests
+import os
 
-PERSONAL_API_URL = "https://dqficiv943.execute-api.us-east-1.amazonaws.com/prod/semantic-search"
-AUTH_TOKEN = "Bearer sakthi-2025-trackwise-token"
+PERSONAL_API_URL = os.environ["PERSONAL_API_URL"]
+AUTH_TOKEN = os.environ["AUTH_TOKEN"]
 
 def lambda_handler(event, context):
     try:
